@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prak8/screens/ItemPage.dart';
+import 'package:prak8/screens/item_detail_screen.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/items.dart';
+import 'package:prak8/models/items.dart';
 
 class FavoritePage extends StatefulWidget {
   const FavoritePage({super.key, required this.navToShopCart});
@@ -151,7 +151,7 @@ class _FavoritePageState extends State<FavoritePage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Избранное'),
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Colors.grey[300],
       ),
       body: FutureBuilder<List<Items>>(
         future: ItemsFavList,

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:prak8/screens/AddPage.dart';
-import 'package:prak8/screens/ItemPage.dart';
+import 'package:prak8/screens/add_item_screen.dart';
+import 'package:prak8/screens/item_detail_screen.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/items.dart';
+import 'package:prak8/models/items.dart';
 
 class ItemsPage extends StatefulWidget {
   const ItemsPage({super.key, required this.navToShopCart});
@@ -311,7 +311,7 @@ class _ItemsPageState extends State<ItemsPage> {
                           ),
                         )
                             : IconButton(
-                          icon: const Icon(Icons.add_shopping_cart),
+                          icon: const Icon(Icons.shopping_cart_outlined),
                           onPressed: () {
                             AddShopCart(UpdatedItemsList.elementAt(index));
                           },

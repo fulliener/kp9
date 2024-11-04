@@ -1,20 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/items.dart';
+import 'package:prak8/models/items.dart';
 
-class AddPage extends StatefulWidget {
-  const AddPage({super.key});
+class EditProductPage extends StatefulWidget {
+  const EditProductPage(BuildContext context, {super.key, required this.index});
+  final int index;
 
   @override
-  State<AddPage> createState() => _AddPageState();
+  State<EditProductPage> createState() => _EditProductPageState();
 }
 
-class _AddPageState extends State<AddPage> {
+class _EditProductPageState extends State<EditProductPage> {
   final TextEditingController _addController1 = TextEditingController();
   final TextEditingController _addController2 = TextEditingController();
   final TextEditingController _addController3 = TextEditingController();
   final TextEditingController _addController4 = TextEditingController();
   String img_link = '';
+  bool favorite = false;
+  bool shopcart = false;
+  int count = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    ApiService().getProductsByID(widget.index).then((value) => {
+      _addController1.text = value.name,
+      _addController2.text = value.image,
+      _addController3.text = value.cost.toString(),
+      _addController4.text = value.describtion,
+      img_link = value.image,
+      favorite = value.favorite,
+      shopcart = value.shopcart,
+      count = value.count,
+    });
+  }
 
   void enter_img(String text) {
     setState(() {
@@ -23,20 +42,20 @@ class _AddPageState extends State<AddPage> {
   }
 
   void AddItem() async {
-    if (int.tryParse(_addController3.text) != null &&
+    if (double.tryParse(_addController3.text) != null &&
         _addController1.text.isNotEmpty &&
         _addController2.text.isNotEmpty &&
         _addController3.text.isNotEmpty &&
         _addController4.text.isNotEmpty) {
-      await ApiService().addProduct(Items(
-        id: 0,
+      await ApiService().updateProductStatus(Items(
+        id: widget.index,
         name: _addController1.text,
         image: _addController2.text,
         cost: double.parse(_addController3.text),
         describtion: _addController4.text,
-        favorite: false,
-        shopcart: false,
-        count: 0,
+        favorite: favorite,
+        shopcart: shopcart,
+        count: count,
       ));
       Navigator.pop(context);
     }
@@ -45,10 +64,10 @@ class _AddPageState extends State<AddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white, // Фон приложения белый
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
         appBar: AppBar(
           title: const Text('Товары'),
-          backgroundColor: Colors.grey[300], // Светло-серый фон AppBar
+          backgroundColor: Colors.grey[200],
         ),
         body: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -59,16 +78,20 @@ class _AddPageState extends State<AddPage> {
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: TextField(
-                      style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                      style:
+                      const TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: const InputDecoration(
                         hintText: 'Название товара',
-                        hintStyle: TextStyle(fontSize: 14.0, color: Colors.grey),
+                        hintStyle:
+                        TextStyle(fontSize: 14.0, color: Colors.grey),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Colors.grey, width: 1.0)), // Серый цвет бордюра
+                                color: Color.fromRGBO(158, 158, 158, 1.0),
+                                width: 1.0)),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Colors.black, width: 2.0)), // Черный при фокусе
+                                color: Color.fromRGBO(158, 158, 158, 1.0),
+                                width: 2.0)),
                       ),
                       controller: _addController1,
                     ),
@@ -80,17 +103,22 @@ class _AddPageState extends State<AddPage> {
                         Expanded(
                           flex: 2,
                           child: TextField(
-                            style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                            style: const TextStyle(
+                                fontSize: 14.0, color: Colors.black),
                             decoration: const InputDecoration(
-                              fillColor: Colors.white,
+                              fillColor:
+                              Color.fromARGB(255, 158, 158, 158),
                               hintText: 'Ссылка на картинку',
-                              hintStyle: TextStyle(fontSize: 14.0, color: Colors.grey),
+                              hintStyle: const TextStyle(
+                                  fontSize: 14.0, color: Colors.grey),
                               enabledBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.grey, width: 1.0)),
+                                      color: Color.fromRGBO(158, 158, 158, 1.0),
+                                      width: 1.0)),
                               focusedBorder: UnderlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Colors.black, width: 2.0)),
+                                      color: Color.fromRGBO(158, 158, 158, 1.0),
+                                      width: 2.0)),
                             ),
                             controller: _addController2,
                             onChanged: (text) {
@@ -104,24 +132,29 @@ class _AddPageState extends State<AddPage> {
                             alignment: Alignment.centerRight,
                             child: Container(
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey, width: 2),
+                                border:
+                                Border.all(color: Colors.grey, width: 2),
                               ),
                               child: Image.network(
                                 img_link,
                                 width: MediaQuery.of(context).size.width * 0.2,
                                 height: MediaQuery.of(context).size.width * 0.2,
                                 fit: BoxFit.cover,
-                                loadingBuilder: (context, child, loadingProgress) {
+                                loadingBuilder:
+                                    (context, child, loadingProgress) {
                                   if (loadingProgress == null) return child;
                                   return const CircularProgressIndicator();
                                 },
                                 errorBuilder: (context, error, stackTrace) {
                                   return Container(
-                                    width: MediaQuery.of(context).size.width * 0.2,
-                                    height: MediaQuery.of(context).size.width * 0.2,
+                                    width:
+                                    MediaQuery.of(context).size.width * 0.2,
+                                    height:
+                                    MediaQuery.of(context).size.width * 0.2,
                                     decoration: BoxDecoration(
-                                      color: Colors.grey[300], // Светло-серый фон
-                                      border: Border.all(color: Colors.grey, width: 1),
+                                      color: Colors.grey[200],
+                                      border: Border.all(
+                                          color: Colors.grey, width: 1),
                                     ),
                                     child: const Center(
                                         child: Text(
@@ -141,17 +174,21 @@ class _AddPageState extends State<AddPage> {
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: TextField(
-                      style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                      style:
+                      const TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: const InputDecoration(
-                        fillColor: Colors.white,
+                        fillColor: Color.fromARGB(255, 255, 246, 218),
                         hintText: 'Цена товара',
-                        hintStyle: TextStyle(fontSize: 14.0, color: Colors.grey),
+                        hintStyle:
+                        TextStyle(fontSize: 14.0, color: Colors.grey),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Colors.grey, width: 1.0)),
+                                color: Color.fromRGBO(158, 158, 158, 1.0),
+                                width: 1.0)),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Colors.black, width: 2.0)),
+                                color: Color.fromRGBO(158, 158, 158, 1.0),
+                                width: 2.0)),
                       ),
                       controller: _addController3,
                     ),
@@ -159,17 +196,21 @@ class _AddPageState extends State<AddPage> {
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: TextField(
-                      style: const TextStyle(fontSize: 14.0, color: Colors.black),
+                      style:
+                      const TextStyle(fontSize: 14.0, color: Colors.black),
                       decoration: const InputDecoration(
-                        fillColor: Colors.white,
+                        fillColor: Color.fromARGB(255, 158, 158, 158),
                         hintText: 'Описание товара',
-                        hintStyle: TextStyle(fontSize: 14.0, color: Colors.grey),
+                        hintStyle:
+                        const TextStyle(fontSize: 14.0, color: Colors.grey),
                         enabledBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Colors.grey, width: 1.0)),
+                                color: Color.fromRGBO(158, 158, 158, 1.0),
+                                width: 1.0)),
                         focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(
-                                color: Colors.black, width: 2.0)),
+                                color: Color.fromRGBO(158, 158, 158, 1.0),
+                                width: 2.0)),
                       ),
                       controller: _addController4,
                     ),
@@ -179,7 +220,7 @@ class _AddPageState extends State<AddPage> {
                   ),
                   ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey[300], // Светло-серый фон кнопки
+                          backgroundColor: Colors.grey[200],
                           padding: const EdgeInsets.only(
                               bottom: 13.0, top: 13.0, right: 30.0, left: 30.0),
                           shape: RoundedRectangleBorder(

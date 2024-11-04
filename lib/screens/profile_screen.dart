@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:prak8/screens/EditPage.dart';
+import 'package:prak8/screens/edit_profile_screen.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/person.dart';
+import 'package:prak8/models/person.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});

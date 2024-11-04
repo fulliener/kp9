@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:prak8/screens/ItemPage.dart';
+import 'package:prak8/screens/item_detail_screen.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/items.dart';
+import 'package:prak8/models/items.dart';
 
 class ShopCartPage extends StatefulWidget {
   const ShopCartPage({super.key, required this.navToShopCart});
@@ -185,7 +185,7 @@ class _ShopCartPageState extends State<ShopCartPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Корзина'),
-          backgroundColor: Colors.white70,
+          backgroundColor: Colors.grey[300],
         ),
         body: FutureBuilder<List<Items>>(
             future: ItemsFromCart,
@@ -212,12 +212,10 @@ class _ShopCartPageState extends State<ShopCartPage> {
                               child: Align(
                                 alignment: Alignment.topLeft,
                                 child: Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, top: 5.0),
+                                  padding: const EdgeInsets.only(left: 10.0, top: 5.0),
                                   child: Text(
                                     'Количество товаров в корзине: ${UpdatedItemsFromCart.fold(0, (sum, item) => sum + item.count)}',
-                                    style:
-                                    const TextStyle(fontSize: 14.0),
+                                    style: const TextStyle(fontSize: 14.0),
                                   ),
                                 ),
                               ),
@@ -225,61 +223,34 @@ class _ShopCartPageState extends State<ShopCartPage> {
                           )
 // удаление с помощью свайпа влево
                               : Slidable(
-                            key: Key(ItemsFromCart.elementAt(index)
-                                .id
-                                .toString()),
+                            key: Key(ItemsFromCart.elementAt(index).id.toString()),
                             endActionPane: ActionPane(
                               motion: const ScrollMotion(),
                               children: [
                                 SlidableAction(
                                   onPressed: (context) async {
-                                    bool? answer =
-                                    await _confirmDismiss();
+                                    bool? answer = await _confirmDismiss();
                                     if (answer == true) {
                                       Items new_item = Items(
-                                          id:
-                                          UpdatedItemsFromCart.elementAt(index)
-                                              .id,
-                                          name:
-                                          UpdatedItemsFromCart.elementAt(index)
-                                              .name,
-                                          image:
-                                          UpdatedItemsFromCart.elementAt(index)
-                                              .image,
-                                          cost:
-                                          UpdatedItemsFromCart.elementAt(index)
-                                              .cost,
-                                          describtion:
-                                          UpdatedItemsFromCart.elementAt(index)
-                                              .describtion,
-                                          favorite:
-                                          UpdatedItemsFromCart.elementAt(index)
-                                              .favorite,
-                                          shopcart: !UpdatedItemsFromCart
-                                              .elementAt(index)
-                                              .shopcart,
+                                          id: UpdatedItemsFromCart.elementAt(index).id,
+                                          name: UpdatedItemsFromCart.elementAt(index).name,
+                                          image: UpdatedItemsFromCart.elementAt(index).image,
+                                          cost: UpdatedItemsFromCart.elementAt(index).cost,
+                                          describtion: UpdatedItemsFromCart.elementAt(index).describtion,
+                                          favorite: UpdatedItemsFromCart.elementAt(index).favorite,
+                                          shopcart: !UpdatedItemsFromCart.elementAt(index).shopcart,
                                           count:
-                                          !UpdatedItemsFromCart.elementAt(index)
-                                              .shopcart
-                                              ? 1
-                                              : 0);
-                                      ApiService()
-                                          .updateProductStatus(new_item);
+                                          !UpdatedItemsFromCart.elementAt(index).shopcart ? 1 : 0);
+                                      ApiService().updateProductStatus(new_item);
                                       setState(() {
                                         UpdatedItemsFromCart.removeAt(
-                                            UpdatedItemsFromCart
-                                                .indexWhere((el) =>
-                                            el.id ==
-                                                ItemsFromCart
-                                                    .elementAt(
-                                                    index)
-                                                    .id));
+                                            UpdatedItemsFromCart.indexWhere((el) =>
+                                            el.id == ItemsFromCart.elementAt(index).id));
                                       });
                                       _refreshData();
                                     }
                                   },
-                                  backgroundColor: const Color.fromRGBO(
-                                      158, 158, 158, 1.0),
+                                  backgroundColor: const Color.fromRGBO(158, 158, 158, 1.0),
                                   foregroundColor: Colors.white,
                                   icon: Icons.delete,
                                 ),
@@ -289,47 +260,31 @@ class _ShopCartPageState extends State<ShopCartPage> {
 // карточка товара
                             child: GestureDetector(
                               onTap: () {
-                                NavToItem(
-                                    ItemsFromCart.elementAt(index).id);
+                                NavToItem(ItemsFromCart.elementAt(index).id);
                               },
                               child: Padding(
-                                padding: const EdgeInsets.only(
-                                    right: 10.0,
-                                    left: 10.0,
-                                    top: 2.0,
-                                    bottom: 5.0),
+                                padding: const EdgeInsets.only(right: 10.0, left: 10.0, top: 2.0, bottom: 5.0),
                                 child: Container(
-                                  height:
-                                  MediaQuery.of(context).size.height *
-                                      0.2,
+                                  height: MediaQuery.of(context).size.height * 0.2,
                                   decoration: BoxDecoration(
-                                    color: const Color.fromARGB(
-                                        255, 255, 255, 255),
+                                    color: const Color.fromARGB(255, 255, 255, 255),
                                     borderRadius:
                                     BorderRadius.circular(7.0),
                                   ),
                                   child: Row(
                                     children: [
                                       Padding(
-                                        padding:
-                                        const EdgeInsets.all(10.0),
+                                        padding: const EdgeInsets.all(10.0),
                                         child: Container(
                                           decoration: BoxDecoration(
                                             border: Border.all(
-                                                color: Colors.grey,
+                                                color: Colors.white,
                                                 width: 1),
                                           ),
                                           child: Image.network(
-                                            ItemsFromCart.elementAt(index)
-                                                .image,
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width *
-                                                0.3,
-                                            height: MediaQuery.of(context)
-                                                .size
-                                                .width *
-                                                0.3,
+                                            ItemsFromCart.elementAt(index).image,
+                                            width: MediaQuery.of(context).size.width * 0.3,
+                                            height: MediaQuery.of(context).size.width * 0.3,
                                             fit: BoxFit.cover,
                                             loadingBuilder: (context,
                                                 child, loadingProgress) {
@@ -337,19 +292,10 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                                 return child;
                                               return const CircularProgressIndicator();
                                             },
-                                            errorBuilder: (context, error,
-                                                stackTrace) {
+                                            errorBuilder: (context, error, stackTrace) {
                                               return Container(
-                                                width:
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                    0.3,
-                                                height:
-                                                MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                    0.3,
+                                                width: MediaQuery.of(context).size.width * 0.3,
+                                                height: MediaQuery.of(context).size.width * 0.3,
                                                 color: Colors.grey,
                                                 child: const Center(
                                                     child: Text(
@@ -365,129 +311,77 @@ class _ShopCartPageState extends State<ShopCartPage> {
                                       ),
                                       Padding(
                                         padding: const EdgeInsets.only(
-                                            top: 20.0,
-                                            right: 5.0,
-                                            left: 10.0,
-                                            bottom: 10.0),
+                                            top: 20.0, right: 5.0, left: 10.0, bottom: 10.0),
                                         child: Column(
                                           children: [
                                             SizedBox(
                                               height: 50.0,
-                                              width:
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                                  0.55,
-                                              child: Text(
-                                                '${ItemsFromCart.elementAt(index).name}',
+                                              width: MediaQuery.of(context).size.width * 0.55,
+                                              child: Text('${ItemsFromCart.elementAt(index).name}',
                                                 style: const TextStyle(
-                                                    fontSize: 14),
-                                                softWrap: true,
+                                                    fontSize: 14), softWrap: true,
                                               ),
                                             ),
                                             SizedBox(
                                               height: 20.0,
-                                              width:
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                                  0.55,
+                                              width: MediaQuery.of(context).size.width * 0.55,
                                               child: Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .start,
+                                                  MainAxisAlignment.start,
                                                   children: [
-                                                    const Text(
-                                                      'Цена: ',
-                                                      style: TextStyle(
-                                                          fontSize: 12),
+                                                    const Text('Цена: ',
+                                                      style: TextStyle(fontSize: 12),
                                                     ),
                                                     Text(
                                                       '${ItemsFromCart.elementAt(index).cost * UpdatedItemsFromCart.elementAt(index).count} ₽',
                                                       style: const TextStyle(
                                                           fontSize: 12,
-                                                          color: Color
-                                                              .fromARGB(
-                                                              255,
-                                                              6,
-                                                              196,
-                                                              9),
-                                                          fontWeight:
-                                                          FontWeight
-                                                              .bold),
+                                                          color: Color.fromARGB(255, 6, 196, 9), fontWeight:
+                                                          FontWeight.bold),
                                                     ),
                                                   ]),
                                             ),
 //изменение количества товара
                                             SizedBox(
-                                              height: 50.0,
-                                              width:
-                                              MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                                  0.4,
+                                              height: 50.0, width:
+                                              MediaQuery.of(context).size.width * 0.4,
                                               child: Padding(
                                                 padding:
                                                 const EdgeInsets.only(
-                                                    left: 5.0,
-                                                    right: 5.0),
+                                                    left: 5.0, right: 5.0),
                                                 child: Row(children: [
                                                   IconButton(
-                                                      icon: const Icon(
-                                                          Icons.remove),
+                                                      icon: const Icon(Icons.remove),
                                                       onPressed:
                                                           () => {
-                                                        decrement(
-                                                            UpdatedItemsFromCart.elementAt(
-                                                                index))
+                                                        decrement(UpdatedItemsFromCart.elementAt(index))
                                                       }),
-                                                  Container(
-                                                    height: 30.0,
-                                                    width: 40.0,
+                                                  Container(height: 30.0, width: 40.0,
                                                     decoration:
                                                     BoxDecoration(
                                                       borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                          5.0),
+                                                      BorderRadius.circular(5.0),
                                                       border: Border.all(
-                                                          color: const Color
-                                                              .fromRGBO(
-                                                              0,
-                                                              0,
-                                                              0,
-                                                              1.0),
+                                                          color: const Color.fromRGBO(0, 0, 0, 1.0),
                                                           width: 2),
                                                     ),
                                                     child: Padding(
                                                       padding:
-                                                      const EdgeInsets
-                                                          .all(5.0),
+                                                      const EdgeInsets.all(5.0),
                                                       child: Text(
-                                                        UpdatedItemsFromCart
-                                                            .elementAt(
-                                                            index)
-                                                            .count
-                                                            .toString(),
+                                                        UpdatedItemsFromCart.elementAt(
+                                                            index).count.toString(),
                                                         style: const TextStyle(
-                                                            fontSize:
-                                                            14.0,
-                                                            color: Colors
-                                                                .black),
+                                                            fontSize: 14.0, color: Colors.black),
                                                         textAlign:
-                                                        TextAlign
-                                                            .center,
+                                                        TextAlign.center,
                                                       ),
                                                     ),
                                                   ),
                                                   IconButton(
-                                                      icon:
-                                                      const Icon(Icons.add),
+                                                      icon: const Icon(Icons.add),
                                                       onPressed:
-                                                          () => {
-                                                        increment(
-                                                            UpdatedItemsFromCart.elementAt(
-                                                                index))
+                                                          () => {increment(UpdatedItemsFromCart.elementAt(index))
                                                       }),
                                                 ]),
                                               ),

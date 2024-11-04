@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/items.dart';
+import 'package:prak8/models/items.dart';
+import 'package:prak8/screens/edit_item_screen.dart';
 
 class ItemPage extends StatefulWidget {
   const ItemPage({super.key, required this.index, required this.navToShopCart});
@@ -29,6 +30,19 @@ class _ItemPageState extends State<ItemPage> {
         shopcart = value.shopcart
       },
     );
+  }
+
+  void _refreshData() {
+    setState(() {
+      item = ApiService().getProductsByID(widget.index);
+      ApiService().getProductsByID(widget.index).then(
+            (value) => {
+          count = value.count,
+          favorite = value.favorite,
+          shopcart = value.shopcart
+        },
+      );
+    });
   }
 
   void UpdateItem(Items this_item) {
@@ -194,6 +208,19 @@ class _ItemPageState extends State<ItemPage> {
     });
   }
 
+  void NavToEdit(index) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProductPage(
+          context,
+          index: index,
+        ),
+      ),
+    );
+    _refreshData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Items>(
@@ -235,6 +262,18 @@ class _ItemPageState extends State<ItemPage> {
                 Navigator.pop(context);
               },
             ),
+            actions: [
+              IconButton(
+                icon: const Padding(
+                  padding: EdgeInsets.only(right: 10.0),
+                  child: Icon(
+                    Icons.edit,
+                    size: 25,
+                  ),
+                ),
+                onPressed: () => {NavToEdit(item.id)},
+              ),
+            ],
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -256,7 +295,7 @@ class _ItemPageState extends State<ItemPage> {
                             child: Center(
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey, width: 2),
+                                  border: Border.all(color: Colors.white, width: 2),
                                 ),
                                 child: Image.network(
                                   item.image,
@@ -298,7 +337,7 @@ class _ItemPageState extends State<ItemPage> {
                                 '${item.cost} ₽',
                                 style: const TextStyle(
                                     fontSize: 16,
-                                    color: Color.fromARGB(255, 6, 196, 9),
+                                    color: Color.fromARGB(255, 0, 0, 0),
                                     fontWeight: FontWeight.bold),
                               ),
                               Expanded(
@@ -332,7 +371,7 @@ class _ItemPageState extends State<ItemPage> {
                                     '${item.cost} ₽',
                                     style: const TextStyle(
                                         fontSize: 16,
-                                        color: Color.fromARGB(255, 6, 196, 9),
+                                        color: Color.fromARGB(255, 0, 0, 0),
                                         fontWeight: FontWeight.bold),
                                   ),
                                   Expanded(

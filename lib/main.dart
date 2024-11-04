@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:prak8/screens/FavouritePage.dart';
-import 'package:prak8/screens/ItemsPage.dart';
-import 'package:prak8/screens/ProfilePage.dart';
+import 'package:prak8/screens/favorites_screen.dart';
+import 'package:prak8/screens/products_screen.dart';
+import 'package:prak8/screens/profile_screen.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:prak8/screens/ShopCartPage.dart';
+import 'package:prak8/screens/shop_cart_screen.dart';
 import 'package:prak8/api_service.dart';
-import 'package:prak8/model/items.dart';
+import 'package:prak8/models/items.dart';
 
 void main() {
   runApp(const MyApp());

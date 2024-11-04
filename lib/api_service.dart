@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:prak8/model/items.dart';
-import 'package:prak8/model/person.dart';
+import 'package:prak8/models/items.dart';
+import 'package:prak8/models/person.dart';
 
 class ApiService {
   final Dio _dio = Dio();
